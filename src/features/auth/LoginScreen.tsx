@@ -4,13 +4,49 @@ import { Colors } from '../../utils/Constants'
 import { screenHeight, screenWidth } from '../../utils/Scaling'
 import CustomText from '../../componnents/ui/CustomText'
 import { navigate } from '../../utils/NavigationUtils'
+import { LOGIN_MUTATION } from '../../graphQL/queries'
+import { useMutation } from '@apollo/client/react'
+import { mmkvStorage } from '../../state/storage'
+import { usePlayerStore } from '../../state/usePlayerStore'
 
 const LoginScreen = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const handleLogin = () => {
-        // Handle login logic here
-    }
+    const [loginMutation, { loading, error }] = useMutation(LOGIN_MUTATION)
+    const [loginError, setLoginError] = useState('');
+    const { setUser } = usePlayerStore()
+
+    const handleLogin = async () => {
+        setLoginError('');
+
+        if (!email || !password) {
+            setLoginError('Email and password are required');
+            return;
+        }
+
+        try {
+            const { data } = await loginMutation({
+                variables: { email, password },
+            });
+            const result = data?.authenticateUserWithPassword;
+            if (result?.__typename === 'UserAuthenticationWithPasswordFailure') {
+                setLoginError(result.message);
+                return;
+            }
+            if (result?.sessionToken) {
+                mmkvStorage.setItem('token', result.sessionToken);
+                setUser(result.item);
+                navigate('UserBottomTab');
+            }
+         
+            console.log('Login success:', result);
+
+
+
+        } catch (err) {
+            setLoginError('Something went wrong. Please try again.', error);
+        }
+    };
     const handleRegister = () => {
         navigate('RegisterScreen')
         // Handle navigation to register screen here
@@ -37,10 +73,15 @@ const LoginScreen = () => {
                 style={styles.input}
                 secureTextEntry
             />
-
-            <TouchableOpacity style={styles.button} onPress={handleLogin} >
-                <CustomText variant='h5' style={styles.buttonText}>{false ? 'Logging in...' : 'Login'}</CustomText>
+            {loginError ? (
+                <CustomText style={{ color: 'red', marginBottom: 10 }}>
+                    {loginError}
+                </CustomText>
+            ) : null}
+            <TouchableOpacity style={styles.button} onPress={handleLogin} disabled={loading}>
+                <CustomText variant='h5' style={styles.buttonText}>{loading ? 'Logging in...' : 'Login'}</CustomText>
             </TouchableOpacity>
+
 
 
             <TouchableOpacity onPress={handleRegister} >

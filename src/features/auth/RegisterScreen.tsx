@@ -1,21 +1,35 @@
-import { View, StyleSheet, Image, TextInput, TouchableOpacity } from 'react-native'
+import { View, StyleSheet, Image, TextInput, TouchableOpacity, } from 'react-native'
 import React, { useState } from 'react'
 import { Colors } from '../../utils/Constants'
 import { screenHeight, screenWidth } from '../../utils/Scaling'
 import CustomText from '../../componnents/ui/CustomText'
 import { navigate } from '../../utils/NavigationUtils'
 
+import { useMutation } from '@apollo/client/react'
+import { REGISTER_MUTATION } from '../../graphQL/queries'
 const RegisterScreen = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [name, setName] = useState('')
 
-  const handleLogin = () => {
-    // navigate('LoginScreen')
-    // Handle login logic here
+  const [registerMutation, { loading, error }] = useMutation(REGISTER_MUTATION)
 
+  const handleRegister = async () => {
+    try {
+      const { data } = await registerMutation({
+        variables: {
+          name, email, password, confirmPassword
+        },
+      })
+      if (data?.registerUser?.user) {
+        navigate('LoginScreen')
+      }
 
-    // Handle login logic here
+    } catch (err) {
+      console.error('Registration error:', err)
+      // Alert.alert('Registration Error', error?.message)
+    }
   }
 
   return (
@@ -49,9 +63,18 @@ const RegisterScreen = () => {
         style={styles.input}
         secureTextEntry
       />
+      <TextInput
+        value={confirmPassword}
+        onChangeText={setConfirmPassword}
+        placeholder='Confirm Password'
+        placeholderTextColor={Colors.inactive}
+        style={styles.input}
+        secureTextEntry
+      />
+      {error && <CustomText variant='body' style={{ color: 'red', marginBottom: 10 }}>Error: {error.message}</CustomText>}
 
-      <TouchableOpacity style={styles.button} onPress={handleLogin} >
-        <CustomText variant='h5' style={styles.buttonText}>{false ? 'Registering...' : 'Register'}</CustomText>
+      <TouchableOpacity style={styles.button} onPress={handleRegister} >
+        <CustomText variant='h5' style={styles.buttonText}>{loading ? 'Registering...' : 'Register'}</CustomText>
       </TouchableOpacity>
 
 

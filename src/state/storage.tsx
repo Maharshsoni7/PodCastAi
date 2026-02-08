@@ -11,7 +11,8 @@ export const mmkvStorage = {
         storage.set(key, value);
     },
     getItem: (key: string) => {
-        return storage.getString(key);
+        const value = storage.getString(key);
+        return value ?? null; // ✅ co
     },
     removeItem: (key: string) => {
         storage.delete(key);

@@ -1,26 +1,32 @@
-import {gql} from '@apollo/client';
+import { gql } from '@apollo/client';
 
 export const LOGIN_MUTATION = gql`
   mutation AuthenticateUserWithPassword($email: String!, $password: String!) {
     authenticateUserWithPassword(email: $email, password: $password) {
+      __typename
       ... on UserAuthenticationWithPasswordSuccess {
         sessionToken
         item {
+          id
           email
-          createdAt
           name
           isAdmin
-          id
+          createdAt
           favoritePodcastsCount
         }
+      }
+
+      ... on UserAuthenticationWithPasswordFailure {
+        message
       }
     }
   }
 `;
 
+
 export const REGISTER_MUTATION = gql`
-  mutation RegisterUser($name: String!, $email: String!, $password: String!) {
-    registerUser(name: $name, email: $email, password: $password) {
+  mutation RegisterUser($name: String!, $email: String!, $password: String!, $confirmPassword: String!) {
+    registerUser(name: $name, email: $email, password: $password, confirmPassword: $confirmPassword) {
       user {
         email
         name
