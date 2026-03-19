@@ -44,7 +44,7 @@ export const GET_PODCASTS = gql`
     podcasts(where: $where) {
       id
       category
-      video_uri
+      video_url
       artwork
       artist {
         bio
@@ -55,8 +55,8 @@ export const GET_PODCASTS = gql`
       lyricist
       title
       type
-      audio_uri
-      favoritedBy(where: {id: {equals: $userId}}) {
+      audio_url
+      favoriteBy(where: {id: {equals: $userId}}) {
         id
       }
     }
@@ -102,7 +102,7 @@ export const GET_USER_FAVOURITE = gql`
       favoritePodcasts {
         id
         category
-        video_uri
+        video_url
         artwork
         artist {
           bio
@@ -113,8 +113,8 @@ export const GET_USER_FAVOURITE = gql`
         lyricist
         title
         type
-        audio_uri
-        favoritedBy(where: {id: {equals: $userId}}) {
+        audio_url
+        favoriteBy(where: {id: {equals: $userId}}) {
           id
         }
       }
@@ -127,7 +127,7 @@ export const GET_TRENDING_AND_TOPPICKS = gql`
     trending: podcasts(take: 5, skip: 3) {
       id
       category
-      video_uri
+      video_url
       artwork
       artist {
         bio
@@ -138,8 +138,8 @@ export const GET_TRENDING_AND_TOPPICKS = gql`
       lyricist
       title
       type
-      audio_uri
-      favoritedBy(where: {id: {equals: $userId}}) {
+      audio_url
+      favoriteBy(where: {id: {equals: $userId}}) {
         id
       }
     }
@@ -147,7 +147,7 @@ export const GET_TRENDING_AND_TOPPICKS = gql`
     topPicks: podcasts(take: 3) {
       id
       category
-      video_uri
+      video_url
       artwork
       artist {
         bio
@@ -158,8 +158,8 @@ export const GET_TRENDING_AND_TOPPICKS = gql`
       lyricist
       title
       type
-      audio_uri
-      favoritedBy(where: {id: {equals: $userId}}) {
+      audio_url
+      favoriteBy(where: {id: {equals: $userId}}) {
         id
       }
     }
@@ -171,7 +171,7 @@ export const AI_PICK = gql`
     getRecommendedPodcasts(userId: $userId) {
       id
       category
-      video_uri
+      video_url
       artwork
       artist {
         bio
@@ -182,7 +182,7 @@ export const AI_PICK = gql`
       lyricist
       title
       type
-      audio_uri
+      audio_url
     }
   }
 `;

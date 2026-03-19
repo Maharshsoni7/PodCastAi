@@ -2,7 +2,7 @@ import { View, StyleSheet, Image, TextInput, TouchableOpacity } from 'react-nati
 import React, { useState } from 'react'
 import { Colors } from '../../utils/Constants'
 import { screenHeight, screenWidth } from '../../utils/Scaling'
-import CustomText from '../../componnents/ui/CustomText'
+import CustomText from '../../components/ui/CustomText'
 import { navigate } from '../../utils/NavigationUtils'
 import { LOGIN_MUTATION } from '../../graphQL/queries'
 import { useMutation } from '@apollo/client/react'
@@ -38,7 +38,7 @@ const LoginScreen = () => {
                 setUser(result.item);
                 navigate('UserBottomTab');
             }
-         
+
             console.log('Login success:', result);
 
 
